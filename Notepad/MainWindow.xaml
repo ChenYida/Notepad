@@ -1,0 +1,36 @@
+﻿<Fluent:RibbonWindow x:Class="Notepad.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Fluent="urn:fluent-ribbon"
+        Title="MainWindow" Height="350" Width="525" Icon="Images/Notepad.png">
+    <Fluent:RibbonWindow.Resources>
+        <BitmapImage x:Key="OpenImageSource" UriSource="Images/Open.png" />
+        <BitmapImage x:Key="SaveImageSource" UriSource="Images/Save.png" />
+    </Fluent:RibbonWindow.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Fluent:Ribbon Grid.Row="0">
+            <Fluent:Ribbon.Menu>
+                <Fluent:Backstage>
+                    <Fluent:BackstageTabControl>
+                        <Fluent:BackstageTabItem Header="Options">
+                        </Fluent:BackstageTabItem>
+                        <Fluent:Button x:Name="ExitButton" Header="Exit" />
+                    </Fluent:BackstageTabControl>
+                </Fluent:Backstage>
+            </Fluent:Ribbon.Menu>
+            <Fluent:RibbonTabItem Header="Home">
+                <Fluent:RibbonGroupBox Header="Operation">
+                    <Fluent:Button Header="Open" Icon="{StaticResource OpenImageSource}" LargeIcon="{StaticResource OpenImageSource}" />
+                    <Fluent:Button Header="Save" Icon="{StaticResource SaveImageSource}" LargeIcon="{StaticResource SaveImageSource}" />
+                </Fluent:RibbonGroupBox>
+            </Fluent:RibbonTabItem>
+        </Fluent:Ribbon>
+        <Grid Grid.Row="1">
+            <TextBlock>Place your txt here.</TextBlock>
+        </Grid>
+    </Grid>
+</Fluent:RibbonWindow>
