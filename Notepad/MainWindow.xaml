@@ -25,7 +25,7 @@
             <Fluent:RibbonTabItem Header="Home">
                 <Fluent:RibbonGroupBox Header="Operation">
                     <Fluent:Button Header="Open" Icon="{StaticResource OpenImageSource}" LargeIcon="{StaticResource OpenImageSource}" Click="Button_Click" />
-                    <Fluent:Button Header="Save" Icon="{StaticResource SaveImageSource}" LargeIcon="{StaticResource SaveImageSource}" />
+                    <Fluent:Button Header="Save" Icon="{StaticResource SaveImageSource}" LargeIcon="{StaticResource SaveImageSource}" Visibility="Hidden" />
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
