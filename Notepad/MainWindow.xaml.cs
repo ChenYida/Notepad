@@ -25,8 +25,9 @@ namespace Notepad
             {
                 filePath = fileDialog.FileName;
                 var tabItem = new TabItem() { Header = fileDialog.SafeFileName };
+                var listBox = new ListBox();
+                tabItem.Content = listBox;
                 TabControl.Items.Add(tabItem);
-                var listBox = tabItem.Content as ListBox;
                 Read(filePath, listBox);
                 listBox.SelectionChanged += ListBox_SelectionChanged;
                 tabItem.IsSelected = true;
@@ -46,7 +47,7 @@ namespace Notepad
                 string line;
                 while ((line = sr.ReadLine()) != null)
                 {
-                    listBox.Items.Add(line.ToString());
+                    listBox.Items.Add(line);
                 }
             }
         }

@@ -24,7 +24,7 @@
             </Fluent:Ribbon.Menu>
             <Fluent:RibbonTabItem Header="Home">
                 <Fluent:RibbonGroupBox Header="Operation">
-                    <Fluent:Button Header="Open" Icon="{StaticResource OpenImageSource}" LargeIcon="{StaticResource OpenImageSource}" Click="Button_Click"/>
+                    <Fluent:Button Header="Open" Icon="{StaticResource OpenImageSource}" LargeIcon="{StaticResource OpenImageSource}" Click="Button_Click" />
                     <Fluent:Button Header="Save" Icon="{StaticResource SaveImageSource}" LargeIcon="{StaticResource SaveImageSource}" />
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
@@ -33,18 +33,11 @@
             <TabControl x:Name="TabControl">
                 <TabControl.Resources>
                     <Style TargetType="{x:Type TabItem}">
-                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="BorderThickness" Value="0" />
                         <Setter Property="Padding" Value="0" />
-                        <Setter Property="Content">
-                            <Setter.Value>
-                                <ListBox></ListBox>
-                            </Setter.Value>
-                        </Setter>
                     </Style>
                 </TabControl.Resources>
             </TabControl>
         </Grid>
     </Grid>
 </Fluent:RibbonWindow>
-    
-    
