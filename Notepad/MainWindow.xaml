@@ -6,6 +6,10 @@
     <Fluent:RibbonWindow.Resources>
         <BitmapImage x:Key="OpenImageSource" UriSource="Images/Open.png" />
         <BitmapImage x:Key="SaveImageSource" UriSource="Images/Save.png" />
+        <BitmapImage x:Key="LockImageSource" UriSource="Images/Lock.png" />
+        <BitmapImage x:Key="UnlockImageSource" UriSource="Images/Unlock.png" />
+        <BitmapImage x:Key="ClearImageSource" UriSource="Images/Clear.png" />
+        <BitmapImage x:Key="ReloadImageSource" UriSource="Images/Reload.png" />
     </Fluent:RibbonWindow.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -24,8 +28,11 @@
             </Fluent:Ribbon.Menu>
             <Fluent:RibbonTabItem Header="Home">
                 <Fluent:RibbonGroupBox Header="Operation">
-                    <Fluent:Button Header="Open" Icon="{StaticResource OpenImageSource}" LargeIcon="{StaticResource OpenImageSource}" Click="Button_Click" />
-                    <Fluent:Button Header="Save" Icon="{StaticResource SaveImageSource}" LargeIcon="{StaticResource SaveImageSource}" Opacity="0.2" ToolTip="under implementation"/>
+                    <Fluent:Button x:Name="Btn_Open" Header="Open" Icon="{StaticResource OpenImageSource}" LargeIcon="{StaticResource OpenImageSource}" Click="Open_Click"/>
+                    <Fluent:Button x:Name="Btn_Reload" Header="Reload All" Icon="{StaticResource ReloadImageSource}" LargeIcon="{StaticResource ReloadImageSource}" Click="Refresh_Click" Visibility="Visible"/>
+                    <Fluent:Button x:Name="Btn_Clear" Header="Clear All" Icon="{StaticResource ClearImageSource}" LargeIcon="{StaticResource ClearImageSource}" Click="Clear_Click"/>
+                    <Fluent:Button x:Name="Btn_Edit" Header="Edit" Icon="{StaticResource UnlockImageSource}" LargeIcon="{StaticResource UnlockImageSource}" Click="Edit_Click"/>
+                    <Fluent:Button x:Name="Btn_Save" Header="Save" Icon="{StaticResource LockImageSource}" LargeIcon="{StaticResource LockImageSource}" Click="Save_Click" Visibility="Collapsed"/>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
