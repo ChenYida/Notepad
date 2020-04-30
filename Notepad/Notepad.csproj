@@ -125,13 +125,15 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Unlock.png" />
     <Resource Include="Notepad2.ico" />
     <Resource Include="Notepad.ico" />
     <Resource Include="Images\Notepad.png" />
-    <Resource Include="Images\Lock.png" />
-    <Resource Include="Images\Clear.png" />
     <Resource Include="Images\Reload.png" />
+    <Resource Include="Images\Edit.png" />
+    <Resource Include="Images\ReloadAll.png" />
+    <Resource Include="Images\Remove.png" />
+    <Resource Include="Images\removeAll.png" />
+    <Resource Include="Images\Cancel.png" />
     <Content Include="Images\Save.png" />
   </ItemGroup>
   <ItemGroup>

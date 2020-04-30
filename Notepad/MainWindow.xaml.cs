@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -10,20 +11,120 @@ using System.Windows.Media;
 
 namespace Notepad
 {
-    public partial class MainWindow
+    public partial class MainWindow : INotifyPropertyChanged
     {
-        private string filePath;
-        List<OpenFileDialog> fileList;
+        TabItem currentTab;
+        IEnumerable<TabItem> allTabs;
+        TextBox editableView;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         public MainWindow()
         {
             InitializeComponent();
-            fileList = new List<OpenFileDialog>();
         }
+
 
         private void Open_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             SelectFileAndLoad();
+        }
+
+        private void ReloadThis_Click(object sender, RoutedEventArgs e)
+        {
+            if (TabControl.Items.IsEmpty) { return; }
+            currentTab = GetCurrentTab();
+            ReloadExistedFileToListBox(currentTab.ToolTip.ToString());
+        }
+
+        private void ReloadAll_Click(object sender, RoutedEventArgs e)
+        {
+            if (TabControl.Items.IsEmpty) { return; }
+            ReloadAllFiles();
+        }
+
+        private void ClearThis_Click(object sender, RoutedEventArgs e)
+        {
+            if (TabControl.Items.IsEmpty) { return; }
+            currentTab = GetCurrentTab();
+            TabControl.Items.Remove(currentTab);
+        }
+
+        private void ClearAll_Click(object sender, RoutedEventArgs e)
+        {
+            if (TabControl.Items.IsEmpty) { return; }
+            TabControl.Items.Clear();
+            Btn_Edit.IsEnabled = false;
+        }
+
+        private void Edit_Click(object sender, RoutedEventArgs e)
+        {
+            if (TabControl.Items.IsEmpty) { return; }
+            currentTab = GetCurrentTab();
+
+            allTabs = GetAllTabs();
+            foreach (TabItem t in allTabs)
+            {
+                t.IsEnabled = false;
+            }
+
+            LoadFileToEditableView(currentTab.ToolTip.ToString());
+            TabControl.Items.Remove(currentTab);
+            Btn_Edit.IsEnabled = false;
+            Btn_Save.IsEnabled = true;
+            Btn_Open.IsEnabled = false;
+            Btn_Reload_All.IsEnabled = false;
+            Btn_Clear_All.IsEnabled = false;
+            Btn_Reload_This.IsEnabled = false;
+            Btn_Remove_This.IsEnabled = false;
+
+            Btn_Cancel.IsEnabled = true;
+
+        }
+
+        private void Save_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFiles();
+            Btn_Edit.IsEnabled = true;
+            Btn_Save.IsEnabled = false;
+            Btn_Open.IsEnabled = true;
+            Btn_Reload_All.IsEnabled = true;
+            Btn_Clear_All.IsEnabled = true;
+            Btn_Reload_This.IsEnabled = true;
+            Btn_Remove_This.IsEnabled = true;
+            Btn_Cancel.IsEnabled = false;
+
+            allTabs = GetAllTabs();
+            foreach (TabItem t in allTabs)
+            {
+                t.IsEnabled = true;
+            }
+        }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            currentTab = GetCurrentTab();
+            ReloadExistedFileToListBox(currentTab.ToolTip.ToString());
+
+            Btn_Edit.IsEnabled = true;
+            Btn_Save.IsEnabled = false;
+            Btn_Open.IsEnabled = true;
+            Btn_Reload_All.IsEnabled = true;
+            Btn_Clear_All.IsEnabled = true;
+            Btn_Reload_This.IsEnabled = true;
+            Btn_Remove_This.IsEnabled = true;
+            Btn_Cancel.IsEnabled = false;
+
+            allTabs = GetAllTabs();
+            foreach (TabItem t in allTabs)
+            {
+                t.IsEnabled = true;
+            }
         }
 
         private void SelectFileAndLoad()
@@ -34,29 +135,34 @@ namespace Notepad
             fileDialog.Filter = "all files(*xls*)|*.txt*";
             if (fileDialog.ShowDialog() != false)
             {
-                StartLoadFiles(fileDialog);
+                StartLoadFiles(fileDialog.FileName);
+                Btn_Edit.IsEnabled = true;
             }
         }
 
-        private void StartLoadFiles(OpenFileDialog fileDialog)
+        private void StartLoadFiles(string filePath)
         {
-            filePath = fileDialog.FileName;
-            LoadFileToListBox(fileDialog);
-            //tabsDict.Add(fileDialog.SafeFileName, filePath);
-
-            if (fileList.Any(t => (t as OpenFileDialog).FileName.Equals(filePath)))
+            allTabs = GetAllTabs();
+            if (allTabs.Any(t => t.ToolTip.ToString().Equals(filePath)))
             {
-                ReloadAllFiles();
+                ReloadExistedFileToListBox(filePath);
             }
             else
             {
-                fileList.Add(fileDialog);
+                LoadFileToListBox(filePath);
             }
         }
 
-        private void LoadFileToListBox(OpenFileDialog fileDialog)
+        private void ReloadExistedFileToListBox(string filePath)
         {
-            var tabItem = new TabItem() { Header = fileDialog.SafeFileName };
+            var existedTb = allTabs.Single(t => t.ToolTip.ToString().Equals(filePath));
+            TabControl.Items.Remove(existedTb);
+            LoadFileToListBox(filePath);
+        }
+
+        private void LoadFileToListBox(string filePath)
+        {
+            var tabItem = new TabItem() { Header = Path.GetFileName(filePath)};
             var listBox = new ListBox();
             tabItem.Content = listBox;
             TabControl.Items.Add(tabItem);
@@ -66,23 +172,25 @@ namespace Notepad
             tabItem.ToolTip = filePath;
         }
 
-        private void LoadFileToEdiatbleView(OpenFileDialog fileDialog)
+        private void LoadFileToEditableView(string filePath)
         {
-            var tabItem = new TabItem() { Header = fileDialog.SafeFileName+"*" };
-            var textBox = new TextBox();
-            tabItem.Content = textBox;
+            var tabItem = new TabItem() { Header = Path.GetFileName(filePath) + "*" };
+            editableView = new TextBox() { AcceptsTab=true,AcceptsReturn=true };
+            tabItem.Content = editableView;
             TabControl.Items.Add(tabItem);
-            Read(filePath, textBox);
+            Read(filePath, editableView);
             tabItem.IsSelected = true;
             tabItem.ToolTip = filePath;
         }
 
         private void ReloadAllFiles()
         {
+            allTabs = GetAllTabs();
+            List<string> tabList = allTabs.Select(t => t.ToolTip.ToString()).ToList();
             TabControl.Items.Clear();
-            foreach (OpenFileDialog file in fileList)
+            foreach (string tab in tabList)
             {
-                LoadFileToListBox(file);
+                LoadFileToListBox(tab);
             }
         }
 
@@ -94,63 +202,72 @@ namespace Notepad
         public void Read(string path, ListBox listBox)
         {
             listBox.Items.Clear();
-            using (StreamReader sr = new StreamReader(path, Encoding.Default))
+            try
             {
-                string line;
-                while ((line = sr.ReadLine()) != null)
+                using (StreamReader sr = new StreamReader(path, Encoding.Default))
                 {
-                    listBox.Items.Add(line);
+                    string line;
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        listBox.Items.Add(line);
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine("The file could not be read:");
+                Console.WriteLine(e.Message);
+            }
         }
+
         public void Read(string path, TextBox textBox)
         {
             textBox.Background = new LinearGradientBrush(Colors.White, Colors.LightGray, 20);
-            using (StreamReader sr = new StreamReader(path, Encoding.Default))
+            try
             {
-                string line;
-                while ((line = sr.ReadLine()) != null)
+                using (StreamReader sr = new StreamReader(path, Encoding.Default))
                 {
-                    textBox.Text += line;
+                    textBox.Text = sr.ReadToEnd();
                 }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("The process failed: {0}", e.ToString());
             }
         }
 
-        private void Edit_Click(object sender, RoutedEventArgs e)
+        private TabItem GetCurrentTab()
         {
-            TabControl.Items.Clear();
-            if (fileList != null)
-            {
-                foreach (OpenFileDialog file in fileList)
-                {
-                    LoadFileToEdiatbleView(file);
-                }
-                Btn_Edit.Visibility = Visibility.Collapsed;
-                Btn_Save.Visibility = Visibility.Visible;
-            }
+            return TabControl.Items.Cast<TabItem>().Single(t => t.IsSelected);
         }
 
-        private void Clear_Click(object sender, RoutedEventArgs e)
+        private IEnumerable<TabItem> GetAllTabs()
         {
-            TabControl.Items.Clear();
-            fileList = new List<OpenFileDialog>();
-        }
-
-        private void Refresh_Click(object sender, RoutedEventArgs e)
-        {
-            ReloadAllFiles();
-        }
-
-        private void Save_Click(object sender, RoutedEventArgs e)
-        {
-            SaveFiles();
-            Btn_Edit.Visibility = Visibility.Visible;
-            Btn_Save.Visibility = Visibility.Collapsed;
-            ReloadAllFiles();
+            return TabControl.Items.Cast<TabItem>();
         }
 
         private void SaveFiles()
         {
+            string filePath = currentTab.ToolTip.ToString();
+            try
+            {
+                //Pass the filepath and filename to the StreamWriter Constructor
+                StreamWriter sw = new StreamWriter(filePath);
+                sw.Write(editableView.Text);
+                //Close the file
+                sw.Close();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception: " + e.Message);
+            }
+            finally
+            {
+                Console.WriteLine("Executing finally block.");
+            }
+
+            ReloadExistedFileToListBox(filePath);
         }
+
     }
 }

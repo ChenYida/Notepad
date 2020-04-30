@@ -6,10 +6,12 @@
     <Fluent:RibbonWindow.Resources>
         <BitmapImage x:Key="OpenImageSource" UriSource="Images/Open.png" />
         <BitmapImage x:Key="SaveImageSource" UriSource="Images/Save.png" />
-        <BitmapImage x:Key="LockImageSource" UriSource="Images/Lock.png" />
-        <BitmapImage x:Key="UnlockImageSource" UriSource="Images/Unlock.png" />
-        <BitmapImage x:Key="ClearImageSource" UriSource="Images/Clear.png" />
+        <BitmapImage x:Key="EditImageSource" UriSource="Images/Edit.png" />
+        <BitmapImage x:Key="RemoveImageSource" UriSource="Images/Remove.png" />
         <BitmapImage x:Key="ReloadImageSource" UriSource="Images/Reload.png" />
+        <BitmapImage x:Key="RemoveAllImageSource" UriSource="Images/RemoveAll.png" />
+        <BitmapImage x:Key="ReloadAllImageSource" UriSource="Images/ReloadAll.png" />
+        <BitmapImage x:Key="CancelImageSource" UriSource="Images/Cancel.png" />
     </Fluent:RibbonWindow.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -27,12 +29,19 @@
                 </Fluent:Backstage>
             </Fluent:Ribbon.Menu>
             <Fluent:RibbonTabItem Header="Home">
-                <Fluent:RibbonGroupBox Header="Operation">
-                    <Fluent:Button x:Name="Btn_Open" Header="Open" Icon="{StaticResource OpenImageSource}" LargeIcon="{StaticResource OpenImageSource}" Click="Open_Click"/>
-                    <Fluent:Button x:Name="Btn_Reload" Header="Reload All" Icon="{StaticResource ReloadImageSource}" LargeIcon="{StaticResource ReloadImageSource}" Click="Refresh_Click" Visibility="Visible"/>
-                    <Fluent:Button x:Name="Btn_Clear" Header="Clear All" Icon="{StaticResource ClearImageSource}" LargeIcon="{StaticResource ClearImageSource}" Click="Clear_Click"/>
-                    <Fluent:Button x:Name="Btn_Edit" Header="Edit" Icon="{StaticResource UnlockImageSource}" LargeIcon="{StaticResource UnlockImageSource}" Click="Edit_Click"/>
-                    <Fluent:Button x:Name="Btn_Save" Header="Save" Icon="{StaticResource LockImageSource}" LargeIcon="{StaticResource LockImageSource}" Click="Save_Click" Visibility="Collapsed"/>
+                <Fluent:RibbonGroupBox Header="Basic Operations">
+                    <Fluent:Button Width="60" x:Name="Btn_Open" Header="Open" Icon="{StaticResource OpenImageSource}" LargeIcon="{StaticResource OpenImageSource}" Click="Open_Click"/>
+                    <Fluent:Button Width="60" x:Name="Btn_Edit" Header="Edit" Icon="{StaticResource EditImageSource}" LargeIcon="{StaticResource EditImageSource}" Click="Edit_Click" IsEnabled="False"/>
+                    <Fluent:Button Width="60" x:Name="Btn_Save" Header="Save" Icon="{StaticResource SaveImageSource}" LargeIcon="{StaticResource SaveImageSource}" Click="Save_Click" IsEnabled="False"/>
+                    <Fluent:Button Width="60" x:Name="Btn_Cancel" Header="Leave" ToolTip="Leave Without Changes" Icon="{StaticResource CancelImageSource}" LargeIcon="{StaticResource CancelImageSource}" Click="Cancel_Click" IsEnabled="False"/>
+                </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Pro">
+                    <Fluent:Button Width="60" x:Name="Btn_Reload_This" Header="Reload This" Icon="{StaticResource ReloadImageSource}" LargeIcon="{StaticResource ReloadImageSource}" Click="ReloadThis_Click" />
+                    <Fluent:Button Width="60" x:Name="Btn_Remove_This" Header="Remove This" Icon="{StaticResource RemoveImageSource}" LargeIcon="{StaticResource RemoveImageSource}" Click="ClearThis_Click"/>
+             </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Pro on all">
+                    <Fluent:Button Width="60" x:Name="Btn_Reload_All" Header="Reload All" Icon="{StaticResource ReloadAllImageSource}" LargeIcon="{StaticResource ReloadAllImageSource}" Click="ReloadAll_Click" />
+                    <Fluent:Button Width="60" x:Name="Btn_Clear_All" Header="Remove All" Icon="{StaticResource RemoveAllImageSource}" LargeIcon="{StaticResource RemoveAllImageSource}" Click="ClearAll_Click"/>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
