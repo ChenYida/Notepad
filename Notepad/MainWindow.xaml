@@ -12,6 +12,52 @@
         <BitmapImage x:Key="RemoveAllImageSource" UriSource="Images/RemoveAll.png" />
         <BitmapImage x:Key="ReloadAllImageSource" UriSource="Images/ReloadAll.png" />
         <BitmapImage x:Key="CancelImageSource" UriSource="Images/Cancel.png" />
+        <ControlTemplate x:Key = "TabItemHeaderTemplate" TargetType = "TabItem">
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content = "×" VerticalContentAlignment="Stretch"
+                                Template = "{StaticResource ButtonTemplate}"/>
+                        <TextBlock Text="Red" Foreground="Red" />
+                    </StackPanel>
+                </TabItem.Header>
+            </TabItem>
+        </ControlTemplate>
+        <ControlTemplate x:Key = "ButtonTemplate" TargetType = "Button">
+            <Grid>
+                <Ellipse x:Name = "ButtonEllipse" Height = "20" Width = "20" Margin="5,0">
+                    <Ellipse.Fill>
+                        <LinearGradientBrush StartPoint = "0,0.2" EndPoint = "0.2,1.4">
+                            <GradientStop Offset = "0" Color = "Transparent" />
+                            <GradientStop Offset = "1" Color = "LightGray" />
+                        </LinearGradientBrush>
+                    </Ellipse.Fill>
+                </Ellipse>
+                <ContentPresenter Content = "{TemplateBinding Content}"
+                                  HorizontalAlignment = "Center" VerticalAlignment = "Center" />
+            </Grid>
+            <ControlTemplate.Triggers>
+                <Trigger Property = "IsMouseOver" Value = "True">
+                    <Setter TargetName = "ButtonEllipse" Property = "Fill">
+                        <Setter.Value>
+                            <LinearGradientBrush StartPoint = "0,0.2" EndPoint = "0.2,1.4">
+                                <GradientStop Offset = "0" Color = "DarkGray" />
+                                <GradientStop Offset = "1" Color = "Transparent" />
+                            </LinearGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property = "IsPressed" Value = "True">
+                    <Setter Property = "RenderTransform">
+                        <Setter.Value>
+                            <ScaleTransform ScaleX = "0.8" ScaleY = "0.8"
+                                            CenterX = "0" CenterY = "0" />
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property = "RenderTransformOrigin" Value = "0.5,0.5" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
     </Fluent:RibbonWindow.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -30,27 +76,74 @@
             </Fluent:Ribbon.Menu>
             <Fluent:RibbonTabItem Header="Home">
                 <Fluent:RibbonGroupBox Header="Basic Operations">
-                    <Fluent:Button Width="60" x:Name="Btn_Open" Header="Open" Icon="{StaticResource OpenImageSource}" LargeIcon="{StaticResource OpenImageSource}" Click="Open_Click"/>
-                    <Fluent:Button Width="60" x:Name="Btn_Edit" Header="Edit" Icon="{StaticResource EditImageSource}" LargeIcon="{StaticResource EditImageSource}" Click="Edit_Click" IsEnabled="False"/>
-                    <Fluent:Button Width="60" x:Name="Btn_Save" Header="Save" Icon="{StaticResource SaveImageSource}" LargeIcon="{StaticResource SaveImageSource}" Click="Save_Click" IsEnabled="False"/>
-                    <Fluent:Button Width="60" x:Name="Btn_Cancel" Header="Leave" ToolTip="Leave Without Changes" Icon="{StaticResource CancelImageSource}" LargeIcon="{StaticResource CancelImageSource}" Click="Cancel_Click" IsEnabled="False"/>
+                    <Fluent:Button Width="60" x:Name="Btn_Open" Header="Open" Icon="{StaticResource OpenImageSource}" LargeIcon="{StaticResource OpenImageSource}" Click="Open_Click" />
+                    <Fluent:Button Width="60" x:Name="Btn_Edit" Header="Edit" Icon="{StaticResource EditImageSource}" LargeIcon="{StaticResource EditImageSource}" Click="Edit_Click" IsEnabled="False" />
+                    <Fluent:Button Width="60" x:Name="Btn_Save" Header="Save" Icon="{StaticResource SaveImageSource}" LargeIcon="{StaticResource SaveImageSource}" Click="Save_Click" IsEnabled="False" />
+                    <Fluent:Button Width="60" x:Name="Btn_Cancel" Header="Leave" ToolTip="Leave Without Changes" Icon="{StaticResource CancelImageSource}" LargeIcon="{StaticResource CancelImageSource}" Click="Cancel_Click" IsEnabled="False" />
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Pro">
                     <Fluent:Button Width="60" x:Name="Btn_Reload_This" Header="Reload This" Icon="{StaticResource ReloadImageSource}" LargeIcon="{StaticResource ReloadImageSource}" Click="ReloadThis_Click" />
-                    <Fluent:Button Width="60" x:Name="Btn_Remove_This" Header="Remove This" Icon="{StaticResource RemoveImageSource}" LargeIcon="{StaticResource RemoveImageSource}" Click="ClearThis_Click"/>
-             </Fluent:RibbonGroupBox>
+                    <Fluent:Button Width="60" x:Name="Btn_Remove_This" Header="Remove This" Icon="{StaticResource RemoveImageSource}" LargeIcon="{StaticResource RemoveImageSource}" Click="ClearThis_Click" />
+                </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Pro on all">
                     <Fluent:Button Width="60" x:Name="Btn_Reload_All" Header="Reload All" Icon="{StaticResource ReloadAllImageSource}" LargeIcon="{StaticResource ReloadAllImageSource}" Click="ReloadAll_Click" />
-                    <Fluent:Button Width="60" x:Name="Btn_Clear_All" Header="Remove All" Icon="{StaticResource RemoveAllImageSource}" LargeIcon="{StaticResource RemoveAllImageSource}" Click="ClearAll_Click"/>
+                    <Fluent:Button Width="60" x:Name="Btn_Clear_All" Header="Remove All" Icon="{StaticResource RemoveAllImageSource}" LargeIcon="{StaticResource RemoveAllImageSource}" Click="ClearAll_Click" />
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
         <Grid Grid.Row="1">
             <TabControl x:Name="TabControl">
                 <TabControl.Resources>
-                    <Style TargetType="{x:Type TabItem}">
-                        <Setter Property="BorderThickness" Value="0" />
-                        <Setter Property="Padding" Value="0" />
+                    <DataTemplate x:Key="CustomTabHeader">
+                        <StackPanel Orientation="Horizontal">
+                            <ContentPresenter>
+                                <ContentPresenter.Content>
+                                    <Binding Path="Header">
+                                        <Binding.RelativeSource>
+                                            <RelativeSource Mode="FindAncestor" 
+                                                            AncestorType="{x:Type TabItem}"/>
+                                        </Binding.RelativeSource>
+                                    </Binding>
+                                </ContentPresenter.Content>
+                            </ContentPresenter>
+                            <Button VerticalContentAlignment="Stretch"
+                                    Template = "{StaticResource ButtonTemplate}" Name="CloseButton">
+                                <Grid>
+                                    <Canvas Width="8" Height="8">
+                                        <Line X1="0" X2="8" Y1="0" Y2="8" 
+                                              Stroke="WhiteSmoke" StrokeThickness="3"/>
+                                        <Line X1="8" X2="0" Y1="0" Y2="8" 
+                                              Stroke="GhostWhite" StrokeThickness="3"/>
+                                    </Canvas>
+                                </Grid>
+                            </Button>
+                        </StackPanel>
+                    </DataTemplate>
+                    <Style TargetType="TabItem">
+                        <Setter Property="HeaderTemplate" 
+                                Value="{StaticResource CustomTabHeader}"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="TabItem">
+                                    <Border Name="Border" BorderThickness="1,1,1,0" BorderBrush="Gainsboro" CornerRadius="4,4,0,0" Margin="2,0">
+                                        <ContentPresenter x:Name="ContentSite"
+                                                          VerticalAlignment="Center"
+                                                          HorizontalAlignment="Center"
+                                                          ContentSource="Header"
+                                                          Margin="10,2"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="Border" Property="Background" Value="#555A8694" />
+                                            
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="False">
+                                            <Setter TargetName="Border" Property="Background" Value="GhostWhite" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
                     </Style>
                 </TabControl.Resources>
             </TabControl>
