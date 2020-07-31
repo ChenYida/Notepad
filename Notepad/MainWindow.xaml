@@ -12,7 +12,8 @@
         <BitmapImage x:Key="RemoveAllImageSource" UriSource="Images/RemoveAll.png" />
         <BitmapImage x:Key="ReloadAllImageSource" UriSource="Images/ReloadAll.png" />
         <BitmapImage x:Key="CancelImageSource" UriSource="Images/Cancel.png" />
-        <ControlTemplate x:Key = "TabItemHeaderTemplate" TargetType = "TabItem">
+        <BitmapImage x:Key="EncodingImageSource" UriSource="Images/Encoding.png" />
+        <!--<ControlTemplate x:Key = "TabItemHeaderTemplate" TargetType = "TabItem">
             <TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
@@ -22,7 +23,7 @@
                     </StackPanel>
                 </TabItem.Header>
             </TabItem>
-        </ControlTemplate>
+        </ControlTemplate>-->
         <ControlTemplate x:Key = "ButtonTemplate" TargetType = "Button">
             <Grid>
                 <Ellipse x:Name = "ButtonEllipse" Height = "20" Width = "20" Margin="5,0">
@@ -41,7 +42,7 @@
                     <Setter TargetName = "ButtonEllipse" Property = "Fill">
                         <Setter.Value>
                             <LinearGradientBrush StartPoint = "0,0.2" EndPoint = "0.2,1.4">
-                                <GradientStop Offset = "0" Color = "DarkGray" />
+                                <GradientStop Offset = "0" Color = "White" />
                                 <GradientStop Offset = "1" Color = "Transparent" />
                             </LinearGradientBrush>
                         </Setter.Value>
@@ -63,6 +64,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="20" />
         </Grid.RowDefinitions>
         <Fluent:Ribbon Grid.Row="0">
             <Fluent:Ribbon.Menu>
@@ -74,7 +76,7 @@
                     </Fluent:BackstageTabControl>
                 </Fluent:Backstage>
             </Fluent:Ribbon.Menu>
-            <Fluent:RibbonTabItem Header="Home">
+            <Fluent:RibbonTabItem Header="Operations">
                 <Fluent:RibbonGroupBox Header="Basic Operations">
                     <Fluent:Button Width="60" x:Name="Btn_Open" Header="Open" Icon="{StaticResource OpenImageSource}" LargeIcon="{StaticResource OpenImageSource}" Click="Open_Click" />
                     <Fluent:Button Width="60" x:Name="Btn_Edit" Header="Edit" Icon="{StaticResource EditImageSource}" LargeIcon="{StaticResource EditImageSource}" Click="Edit_Click" IsEnabled="False" />
@@ -89,10 +91,22 @@
                     <Fluent:Button Width="60" x:Name="Btn_Reload_All" Header="Reload All" Icon="{StaticResource ReloadAllImageSource}" LargeIcon="{StaticResource ReloadAllImageSource}" Click="ReloadAll_Click" />
                     <Fluent:Button Width="60" x:Name="Btn_Clear_All" Header="Remove All" Icon="{StaticResource RemoveAllImageSource}" LargeIcon="{StaticResource RemoveAllImageSource}" Click="ClearAll_Click" />
                 </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Encoding" Name="EncodingGroupBox">
+                    <Fluent:DropDownButton Header="Encoding In" Icon="{StaticResource EncodingImageSource}" LargeIcon="{StaticResource EncodingImageSource}">
+                        <StackPanel>
+                            <Button Background="WhiteSmoke" BorderThickness="0,1" Click="SetEncoding">ASCII</Button>
+                            <Button Background="WhiteSmoke" BorderThickness="0,1" Click="SetEncoding">ISO-8859-1</Button>
+                            <Button Background="WhiteSmoke" BorderThickness="0,1" Click="SetEncoding">ISO-8859-15</Button>
+                            <Button Background="WhiteSmoke" BorderThickness="0,1" Click="SetEncoding">UTF-8</Button>
+                            <Button Background="WhiteSmoke" BorderThickness="0,1" Click="SetEncoding">GB2312</Button>
+                            <Button Background="WhiteSmoke" BorderThickness="0,1" Click="SetEncoding">BIG5</Button>
+                        </StackPanel>
+                    </Fluent:DropDownButton>
+                </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
         <Grid Grid.Row="1">
-            <TabControl x:Name="TabControl">
+            <TabControl x:Name="TabControl" BorderThickness="0" Background="#F0F0F0" SelectionChanged="TabControl_SelectionChanged">
                 <TabControl.Resources>
                     <DataTemplate x:Key="CustomTabHeader">
                         <StackPanel Orientation="Horizontal">
@@ -107,13 +121,13 @@
                                 </ContentPresenter.Content>
                             </ContentPresenter>
                             <Button VerticalContentAlignment="Stretch"
-                                    Template = "{StaticResource ButtonTemplate}" Name="CloseButton">
+                                    Template = "{StaticResource ButtonTemplate}" Name="CloseButton" Click="CloseATab_Click">
                                 <Grid>
                                     <Canvas Width="8" Height="8">
                                         <Line X1="0" X2="8" Y1="0" Y2="8" 
-                                              Stroke="WhiteSmoke" StrokeThickness="3"/>
+                                              Stroke="LightGray" StrokeThickness="3"/>
                                         <Line X1="8" X2="0" Y1="0" Y2="8" 
-                                              Stroke="GhostWhite" StrokeThickness="3"/>
+                                              Stroke="LightGray" StrokeThickness="3"/>
                                     </Canvas>
                                 </Grid>
                             </Button>
@@ -134,11 +148,11 @@
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsSelected" Value="True">
-                                            <Setter TargetName="Border" Property="Background" Value="#555A8694" />
-                                            
+                                            <Setter TargetName="Border" Property="Background" Value="White" />
+                                            <Setter TargetName="Border" Property="BorderThickness" Value="2,1,1,0"/>
                                         </Trigger>
                                         <Trigger Property="IsSelected" Value="False">
-                                            <Setter TargetName="Border" Property="Background" Value="GhostWhite" />
+                                            <Setter TargetName="Border" Property="Background" Value="#DCDCDC" />
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -147,6 +161,12 @@
                     </Style>
                 </TabControl.Resources>
             </TabControl>
+        </Grid>
+        <Grid Grid.Column="0" Grid.Row="2" Name="StatusBar" Background="WhiteSmoke">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Label Margin="5, 0" Padding="0" Foreground="DarkGray">Encoding:</Label>
+                <TextBlock Margin="5, 0" Padding="0" Foreground="DarkGray" x:Name="EncodingTextBlock" Text="ASCII"/>
+            </StackPanel>
         </Grid>
     </Grid>
 </Fluent:RibbonWindow>

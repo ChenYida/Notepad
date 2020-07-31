@@ -134,6 +134,7 @@
     <Resource Include="Images\Remove.png" />
     <Resource Include="Images\removeAll.png" />
     <Resource Include="Images\Cancel.png" />
+    <Resource Include="Images\Encoding.png" />
     <Content Include="Images\Save.png" />
   </ItemGroup>
   <ItemGroup>
